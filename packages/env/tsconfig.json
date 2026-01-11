@@ -1,0 +1,3 @@
+{
+  "extends": "@working-with-large-datasets/config/tsconfig.base.json"
+}
