@@ -1,28 +1,22 @@
-import {
-  pgTable,
-  serial,
-  varchar,
-  integer,
-  boolean,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: serial().primaryKey(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  firstName: text(),
+  lastName: text(),
 });
 
 export const orders = pgTable("orders", {
-  id: serial().primaryKey(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   paid: boolean(),
-  userId: integer("user_id").references(() => users.id),
-  productId: integer("product_id").references(() => products.id),
+  userId: integer().references(() => users.id),
+  productId: integer().references(() => products.id),
 });
 
 export const products = pgTable("products", {
-  id: serial().primaryKey(),
-  name: varchar(),
-  department: varchar(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text(),
+  department: text(),
   price: integer(),
   weight: integer(),
 });

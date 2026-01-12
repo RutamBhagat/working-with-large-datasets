@@ -3,4 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 
 import { relations } from "./relations";
 
-export const db = drizzle(env.DATABASE_URL, { relations: relations });
+export const db = drizzle(env.DATABASE_URL, {
+  relations: relations,
+  casing: "snake_case",
+});
