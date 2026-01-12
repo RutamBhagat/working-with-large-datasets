@@ -22,14 +22,14 @@
   "dependencies": {
     "@working-with-large-datasets/env": "workspace:*",
     "dotenv": "catalog:",
-    "drizzle-orm": "^0.45.1",
+    "drizzle-orm": "1.0.0-beta.10-4a43a22",
     "pg": "^8.16.3",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@types/pg": "^8.15.6",
     "@working-with-large-datasets/config": "workspace:*",
-    "drizzle-kit": "^0.31.8",
+    "drizzle-kit": "1.0.0-beta.10-4a43a22",
     "typescript": "catalog:"
   }
 }
