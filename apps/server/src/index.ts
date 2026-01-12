@@ -24,9 +24,9 @@ app.get("/", (c) => {
 
 import { serve } from "@hono/node-server";
 
-app.route("/orders", ordersRouter);
-app.route("/products", productsRouter);
-app.route("/users", usersRouter);
+app.route("/user", usersRouter);
+app.route("/product", productsRouter);
+app.route("/order", ordersRouter);
 
 serve(
   {

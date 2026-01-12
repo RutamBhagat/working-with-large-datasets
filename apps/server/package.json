@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
+    "@hono/zod-validator": "^0.7.6",
     "@working-with-large-datasets/db": "workspace:*",
     "@working-with-large-datasets/env": "workspace:*",
     "dotenv": "catalog:",
