@@ -23,7 +23,6 @@ export const products = pgTable("products", {
 export const orders = pgTable(
   "orders",
   {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
     paid: boolean(),
     userId: integer().references(() => users.id),
     productId: integer().references(() => products.id),

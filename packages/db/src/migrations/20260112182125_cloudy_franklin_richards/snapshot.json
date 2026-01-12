@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "2d35a5d2-118e-465c-993a-eea3ae0c54e2",
+  "id": "9d9aa500-e04f-444f-8f3e-99c1f9d95880",
   "prevIds": [
-    "9306b5b4-e1b6-421b-a5ea-572c226d04ed"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -25,28 +25,6 @@
       "schema": "public"
     },
     {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": {
-        "type": "always",
-        "name": "orders_id_seq",
-        "increment": "1",
-        "startWith": "1",
-        "minValue": "1",
-        "maxValue": "2147483647",
-        "cache": 1,
-        "cycle": false
-      },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "orders"
-    },
-    {
       "type": "boolean",
       "typeSchema": null,
       "notNull": false,
@@ -62,7 +40,7 @@
     {
       "type": "integer",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
@@ -75,7 +53,7 @@
     {
       "type": "integer",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
@@ -243,13 +221,14 @@
     },
     {
       "columns": [
-        "id"
+        "user_id",
+        "product_id"
       ],
       "nameExplicit": false,
       "name": "orders_pkey",
+      "entityType": "pks",
       "schema": "public",
-      "table": "orders",
-      "entityType": "pks"
+      "table": "orders"
     },
     {
       "columns": [
@@ -272,8 +251,5 @@
       "entityType": "pks"
     }
   ],
-  "renames": [
-    "public.orders.orders_user_id_fkey->public.orders.orders_user_id_users_id_fkey",
-    "public.orders.orders_product_id_fkey->public.orders.orders_product_id_products_id_fkey"
-  ]
+  "renames": []
 }
