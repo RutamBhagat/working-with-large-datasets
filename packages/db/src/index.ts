@@ -13,6 +13,7 @@ export {
   max,
   min,
   avg,
+  inArray,
 } from "drizzle-orm";
 export { union, intersect, except } from "drizzle-orm/pg-core";
 import { relations } from "./relations";

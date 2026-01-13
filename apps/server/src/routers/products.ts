@@ -12,6 +12,7 @@ import {
   max,
   sql,
   union,
+  inArray,
 } from "@working-with-large-datasets/db";
 import {
   orders,
@@ -532,6 +533,50 @@ productsRouter.get("/subquery-2", async (c) => {
     }
 
     return c.json({ success: true, data: userResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-3", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        id: products.id,
+      })
+      .from(products)
+      .where(gt(sql`${products.price} / ${products.weight}`, 400));
+
+    const orderResult = await db
+      .select({
+        id: sql<string>`${orders.userId} || '-' || ${orders.productId}`.as(
+          "id"
+        ),
+      })
+      .from(orders)
+      .where(inArray(orders.productId, subquery))
+      .orderBy(desc(orders.userId));
+
+    if (orderResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({ success: true, data: orderResult });
   } catch (error) {
     return c.json(
       {
