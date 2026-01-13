@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { count, db, eq } from "@working-with-large-datasets/db";
+import { avg, count, db, desc, eq } from "@working-with-large-datasets/db";
 import { orders, users } from "@working-with-large-datasets/db/schema";
 
 export const ordersRouter = new Hono();
@@ -49,6 +49,39 @@ ordersRouter.get("/user-paid-and-unpaid", async (c) => {
       );
     }
     return c.json({ success: true, data: userPaidAndUnpaid });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+ordersRouter.get("/average-orders-per-user", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        userId: orders.userId,
+        averageOrdersPerUser: count().as("averageOrdersPerUser"),
+      })
+      .from(orders)
+      .groupBy(orders.userId)
+      .orderBy(desc(count()))
+      .as("subquery");
+
+    const averageOrdersPerUser = await db
+      .select({
+        averageOrdersPerUser: avg(subquery.averageOrdersPerUser),
+      })
+      .from(subquery);
+
+    return c.json({ success: true, data: averageOrdersPerUser });
   } catch (error) {
     return c.json(
       {
