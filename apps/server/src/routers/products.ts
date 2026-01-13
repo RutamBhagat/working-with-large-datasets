@@ -789,3 +789,41 @@ productsRouter.get("/subquery-8", async (c) => {
     );
   }
 });
+
+productsRouter.get("/distinct-departments", async (c) => {
+  try {
+    const productResult = await db
+      .selectDistinctOn([products.department], {
+        department: products.department,
+      })
+      .from(products)
+      .orderBy(asc(products.department));
+
+    if (productResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({
+      success: true,
+      length: productResult.length,
+      data: productResult,
+    });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
