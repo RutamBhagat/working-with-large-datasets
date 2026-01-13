@@ -5,9 +5,11 @@ import {
   asc,
   db,
   desc,
+  eq,
   except,
   gt,
   intersect,
+  max,
   sql,
   union,
 } from "@working-with-large-datasets/db";
@@ -335,3 +337,45 @@ productsRouter.get(
     }
   }
 );
+
+productsRouter.get("/subquery-1", async (c) => {
+  try {
+    const mostExpensiveProductInToysDepartment = db
+      .select({
+        maxPrice: max(products.price),
+      })
+      .from(products)
+      .where(eq(products.department, "Toys"));
+
+    const productResult = await db
+      .select({
+        name: products.name,
+        price: products.price,
+      })
+      .from(products)
+      .where(
+        gt(products.price, sql`(${mostExpensiveProductInToysDepartment})`) // use the subquery as a scalar value since it returns one row and one column
+      )
+      .orderBy(desc(products.price));
+
+    if (productResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({
+      success: true,
+      data: productResult,
+    });
+  } catch (error) {
+    return c.json(
+      { success: false, data: { error, message: "Internal server error" } },
+      500
+    );
+  }
+});
