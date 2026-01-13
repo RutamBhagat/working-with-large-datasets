@@ -18,7 +18,10 @@ ordersRouter.get("/paid-and-unpaid", async (c) => {
     return c.json(
       {
         success: false,
-        data: { error, message: "Internal server error" },
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
       },
       500
     );
@@ -48,7 +51,13 @@ ordersRouter.get("/user-paid-and-unpaid", async (c) => {
     return c.json({ success: true, data: userPaidAndUnpaid });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }

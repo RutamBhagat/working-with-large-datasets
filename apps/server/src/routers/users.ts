@@ -23,7 +23,13 @@ usersRouter.get("/last-10-users", async (c) => {
     return c.json({ success: true, data: users });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }

@@ -36,7 +36,13 @@ productsRouter.get("/sort-by-price", async (c) => {
     return c.json({ success: true, data: products });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }
@@ -61,7 +67,13 @@ productsRouter.get("/sort-by-price-and-weight", async (c) => {
     return c.json({ success: true, data: products });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }
@@ -86,7 +98,13 @@ productsRouter.get("/sort-by-name", async (c) => {
     return c.json({ success: true, data: products });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }
@@ -123,7 +141,13 @@ productsRouter.get(
       return c.json({ success: true, data: products });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -161,7 +185,13 @@ productsRouter.get(
       return c.json({ success: true, data: productResult });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -177,7 +207,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(products.price))
@@ -186,7 +219,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(sql`${products.price} / ${products.weight}`))
@@ -205,7 +241,13 @@ productsRouter.get(
       return c.json({ success: true, data: productsResult });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -243,7 +285,13 @@ productsRouter.get(
       return c.json({ success: true, data: productsResult.rows });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -259,7 +307,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(products.price))
@@ -268,7 +319,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(sql`${products.price} / ${products.weight}`))
@@ -287,7 +341,13 @@ productsRouter.get(
       return c.json({ success: true, data: productsResult });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -303,7 +363,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(products.price))
@@ -312,7 +375,10 @@ productsRouter.get(
           .select({
             price: products.price,
             weight: products.weight,
-            productToWeightRatio: sql`${products.price} / ${products.weight}`,
+            productToWeightRatio:
+              sql<number>`${products.price} / ${products.weight}`.as(
+                "productToWeightRatio"
+              ),
           })
           .from(products)
           .orderBy(desc(sql`${products.price} / ${products.weight}`))
@@ -331,7 +397,55 @@ productsRouter.get(
       return c.json({ success: true, data: productsResult });
     } catch (error) {
       return c.json(
-        { success: false, data: { error, message: "Internal server error" } },
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
+        500
+      );
+    }
+  }
+);
+
+productsRouter.get(
+  "/highest-price-and-highest-price-to-weight-ratio-subquery",
+  async (c) => {
+    try {
+      const subquery = db
+        .select({
+          price: products.price,
+          weight: products.weight,
+          productToWeightRatio:
+            sql<number>`${products.price} / ${products.weight}`.as(
+              "productToWeightRatio"
+            ),
+        })
+        .from(products)
+        .as("subquery");
+
+      const priceToWeightRatio = await db
+        .select({
+          price: subquery.price,
+          weight: subquery.weight,
+          productToWeightRatio: subquery.productToWeightRatio,
+        })
+        .from(subquery)
+        .orderBy(desc(subquery.price));
+
+      return c.json({ success: true, data: priceToWeightRatio });
+    } catch (error) {
+      console.error("Subquery error:", error);
+      return c.json(
+        {
+          success: false,
+          data: {
+            error: error instanceof Error ? error.message : String(error),
+            message: "Internal server error",
+          },
+        },
         500
       );
     }
@@ -374,7 +488,13 @@ productsRouter.get("/subquery-1", async (c) => {
     });
   } catch (error) {
     return c.json(
-      { success: false, data: { error, message: "Internal server error" } },
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
       500
     );
   }
