@@ -14,6 +14,7 @@ export {
   min,
   avg,
   inArray,
+  notInArray,
 } from "drizzle-orm";
 export { union, intersect, except } from "drizzle-orm/pg-core";
 import { relations } from "./relations";

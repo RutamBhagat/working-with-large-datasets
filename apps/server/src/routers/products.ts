@@ -14,6 +14,8 @@ import {
   union,
   inArray,
   avg,
+  lt,
+  notInArray,
 } from "@working-with-large-datasets/db";
 import {
   orders,
@@ -618,6 +620,39 @@ productsRouter.get("/subquery-4", async (c) => {
         404
       );
     }
+
+    return c.json({ success: true, data: productResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-5", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        department: products.department,
+      })
+      .from(products)
+      .where(lt(products.price, 100));
+
+    const productResult = await db
+      .select({
+        department: products.department,
+        price: products.price,
+      })
+      .from(products)
+      .where(notInArray(products.department, subquery))
+      .orderBy(asc(products.price));
 
     return c.json({ success: true, data: productResult });
   } catch (error) {
