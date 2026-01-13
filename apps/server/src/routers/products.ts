@@ -16,6 +16,7 @@ import {
   avg,
   lt,
   notInArray,
+  and,
 } from "@working-with-large-datasets/db";
 import {
   orders,
@@ -697,6 +698,82 @@ productsRouter.get("/subquery-6", async (c) => {
         404
       );
     }
+
+    return c.json({ success: true, data: productResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-7", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        department: products.department,
+        maxPrice: max(products.price).as("maxPrice"),
+      })
+      .from(products)
+      .groupBy(products.department)
+      .orderBy(desc(max(products.price)))
+      .as("subquery");
+
+    const productResult = await db
+      .select({
+        name: products.name,
+        department: products.department,
+        price: products.price,
+      })
+      .from(products)
+      .innerJoin(
+        subquery,
+        and(
+          eq(products.department, subquery.department),
+          eq(products.price, subquery.maxPrice)
+        )
+      )
+      .orderBy(desc(products.price));
+
+    return c.json({ success: true, data: productResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-8", async (c) => {
+  try {
+    const productResult = await db
+      .select({
+        name: products.name,
+        department: products.department,
+        price: products.price,
+      })
+      .from(products)
+      .where(
+        sql`${products.price} = (
+          SELECT MAX(price)
+          FROM products p2
+          WHERE p2.department = ${products.department}
+        )`
+      )
+      .orderBy(desc(products.price));
 
     return c.json({ success: true, data: productResult });
   } catch (error) {
