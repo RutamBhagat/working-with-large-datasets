@@ -13,6 +13,7 @@ import {
   sql,
   union,
   inArray,
+  avg,
 } from "@working-with-large-datasets/db";
 import {
   orders,
@@ -577,6 +578,48 @@ productsRouter.get("/subquery-3", async (c) => {
     }
 
     return c.json({ success: true, data: orderResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-4", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        averageProductPrice: avg(products.price).as("averageProductPrice"),
+      })
+      .from(products);
+
+    const productResult = await db
+      .select({
+        name: products.name,
+        price: products.price,
+      })
+      .from(products)
+      .where(gt(products.price, subquery))
+      .orderBy(asc(products.price));
+
+    if (productResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({ success: true, data: productResult });
   } catch (error) {
     return c.json(
       {
