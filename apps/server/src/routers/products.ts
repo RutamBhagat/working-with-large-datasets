@@ -13,7 +13,11 @@ import {
   sql,
   union,
 } from "@working-with-large-datasets/db";
-import { products } from "@working-with-large-datasets/db/schema";
+import {
+  orders,
+  products,
+  users,
+} from "@working-with-large-datasets/db/schema";
 
 export const productsRouter = new Hono();
 
@@ -486,6 +490,48 @@ productsRouter.get("/subquery-1", async (c) => {
       success: true,
       data: productResult,
     });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
+
+productsRouter.get("/subquery-2", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        userId: orders.userId,
+      })
+      .from(orders)
+      .where(eq(orders.productId, 3))
+      .as("subquery");
+
+    const userResult = await db
+      .select({
+        firstName: users.firstName,
+      })
+      .from(users)
+      .innerJoin(subquery, eq(users.id, subquery.userId));
+
+    if (userResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({ success: true, data: userResult });
   } catch (error) {
     return c.json(
       {
