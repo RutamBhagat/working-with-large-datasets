@@ -668,3 +668,47 @@ productsRouter.get("/subquery-5", async (c) => {
     );
   }
 });
+
+productsRouter.get("/subquery-6", async (c) => {
+  try {
+    const subquery = db
+      .select({
+        maxPrice: max(products.price).as("maxPrice"),
+      })
+      .from(products)
+      .where(eq(products.department, "Industrial"));
+
+    const productResult = await db
+      .select({
+        name: products.name,
+        department: products.department,
+        price: products.price,
+      })
+      .from(products)
+      .where(gt(products.price, subquery))
+      .orderBy(asc(products.price));
+
+    if (productResult.length === 0) {
+      return c.json(
+        {
+          success: false,
+          data: { error: "No data found", message: "No data found" },
+        },
+        404
+      );
+    }
+
+    return c.json({ success: true, data: productResult });
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        data: {
+          error: error instanceof Error ? error.message : String(error),
+          message: "Internal server error",
+        },
+      },
+      500
+    );
+  }
+});
