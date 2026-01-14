@@ -1,10 +1,12 @@
+import { sql } from "drizzle-orm";
 import {
   pgTable,
-  text,
   integer,
   boolean,
   primaryKey,
   varchar,
+  check,
+  unique,
 } from "drizzle-orm/pg-core";
 import {
   createInsertSchema,
@@ -24,13 +26,21 @@ export const updateUserSchema = createUpdateSchema(users);
 export const TSelectUserSchema = users.$inferSelect;
 export const TInsertUserSchema = users.$inferInsert;
 
-export const products = pgTable("products", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 50 }),
-  department: varchar({ length: 50 }),
-  price: integer(),
-  weight: integer(),
-});
+export const products = pgTable(
+  "products",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar({ length: 50 }),
+    department: varchar({ length: 50 }),
+    price: integer().notNull(),
+    weight: integer(),
+  },
+  (table) => [
+    check("positive_price", sql`${table.price} > 0`),
+    check("positive_weight", sql`${table.weight} > 0`),
+    unique("unique_name_department").on(table.name, table.department),
+  ]
+);
 
 export const selectProductSchema = createSelectSchema(products);
 export const insertProductSchema = createInsertSchema(products);
