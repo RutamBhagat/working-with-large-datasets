@@ -48,15 +48,12 @@ export const updateProductSchema = createUpdateSchema(products);
 export const TSelectProductSchema = products.$inferSelect;
 export const TInsertProductSchema = products.$inferInsert;
 
-export const orders = pgTable(
-  "orders",
-  {
-    paid: boolean(),
-    userId: integer().references(() => users.id),
-    productId: integer().references(() => products.id),
-  },
-  (table) => [primaryKey({ columns: [table.userId, table.productId] })]
-);
+export const orders = pgTable("orders", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  paid: boolean(),
+  userId: integer().references(() => users.id),
+  productId: integer().references(() => products.id),
+});
 
 export const selectOrderSchema = createSelectSchema(orders);
 export const insertOrderSchema = createInsertSchema(orders);
